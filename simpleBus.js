@@ -31,9 +31,29 @@ const status = document.getElementById("status");
 
 // Start Trip
 document.getElementById("startBtn").addEventListener("click", () => {
-  startTime = new Date();
-  tripData.start_time = startTime.toISOString();
-  status.innerText = "✅ Trip Started!";
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        startTime = new Date();
+        tripData.start_time = startTime.toISOString();
+        // Store start location
+        tripData.start_location = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          timestamp: startTime.toISOString(),
+        };
+        status.innerText = `✅ Trip Started! Location: (${position.coords.latitude.toFixed(
+          5
+        )}, ${position.coords.longitude.toFixed(5)})`;
+      },
+      (err) => {
+        console.error(err);
+        alert("❌ Error getting start location");
+      }
+    );
+  } else {
+    alert("❌ Geolocation not supported!");
+  }
 });
 
 // Record Stop
@@ -60,20 +80,42 @@ document.getElementById("stopBusBtn").addEventListener("click", () => {
 
 // Stop Trip
 document.getElementById("stopBtn").addEventListener("click", async () => {
-  const endTime = new Date();
-  tripData.end_time = endTime.toISOString();
-
-  if (startTime) {
-    tripData.duration_seconds = Math.round((endTime - startTime) / 1000);
-  }
-
-  try {
-    await db.collection("trips").doc(tripId).set(tripData);
-    const duration = formatDuration(tripData.duration_seconds);
-    status.innerText = `✅ Trip Saved! Total Duration: ${duration}`;
-    alert(`Trip Saved! Total Duration: ${duration}`);
-  } catch (err) {
-    console.error("Error writing trip:", err);
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const endTime = new Date();
+        tripData.end_time = endTime.toISOString();
+        // Store stop location
+        tripData.stop_location = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          timestamp: endTime.toISOString(),
+        };
+        if (startTime) {
+          tripData.duration_seconds = Math.round((endTime - startTime) / 1000);
+        }
+        try {
+          await db.collection("trips").doc(tripId).set(tripData);
+          const duration = formatDuration(tripData.duration_seconds);
+          status.innerText = `✅ Trip Saved! Total Duration: ${duration}\nRoute: Start (${tripData.start_location.lat.toFixed(
+            5
+          )}, ${tripData.start_location.lng.toFixed(
+            5
+          )}) → Stop (${tripData.stop_location.lat.toFixed(
+            5
+          )}, ${tripData.stop_location.lng.toFixed(5)})`;
+          alert(`Trip Saved! Total Duration: ${duration}`);
+        } catch (err) {
+          console.error("Error writing trip:", err);
+        }
+      },
+      (err) => {
+        console.error(err);
+        alert("❌ Error getting stop location");
+      }
+    );
+  } else {
+    alert("❌ Geolocation not supported!");
   }
 });
 
