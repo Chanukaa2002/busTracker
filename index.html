@@ -3,19 +3,80 @@
   <head>
     <meta charset="UTF-8" />
     <title>Simple Bus Tracker</title>
+    <!-- Responsive meta tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        color: #222;
+        min-height: 100vh;
+      }
+      .container {
+        width: 100vw;
+        max-width: 480px;
+        margin: 0 auto;
+        box-sizing: border-box;
+        padding: 1rem;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+      }
+      h1 {
+        font-size: 1.3em;
+        margin: 0.5em 0;
+        text-align: center;
+      }
+      button {
+        font-size: 1em;
+        padding: 0.7em 1em;
+        border-radius: 6px;
+        border: 1px solid #1976d2;
+        margin: 0.5em 0;
+        width: 100%;
+        box-sizing: border-box;
+        background: #1976d2;
+        color: #fff;
+        transition: background 0.2s;
+      }
+      button:active {
+        background: #1565c0;
+      }
+      #status {
+        font-size: 1em;
+        margin: 1em 0;
+        text-align: center;
+      }
+      @media (max-width: 600px) {
+        .container {
+          padding: 0.5rem;
+          border-radius: 0;
+          box-shadow: none;
+        }
+        h1 {
+          font-size: 1.1em;
+        }
+        button {
+          font-size: 1em;
+          padding: 0.6em 0.7em;
+        }
+      }
+    </style>
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
   </head>
   <body>
-    <h1>Simple Bus Tracker</h1>
-
-    <!-- Buttons -->
-    <button id="startBtn">Start Trip</button>
-    <button id="stopBusBtn">Record Bus Stop</button>
-    <button id="stopBtn">Stop Trip</button>
-
-    <p id="status"></p>
+    <div class="container">
+      <h1>Simple Bus Tracker</h1>
+      <!-- Buttons -->
+      <button id="startBtn">Start Trip</button>
+      <button id="stopBusBtn">Record Bus Stop</button>
+      <button id="stopBtn">Stop Trip</button>
+      <p id="status"></p>
+    </div>
 
     <!-- Load your script at the END -->
     <script src="simpleBus.js"></script>
